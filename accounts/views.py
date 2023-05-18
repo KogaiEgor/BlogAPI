@@ -33,14 +33,15 @@ class login(views.APIView):
             user = authenticate(username=username, password=password)
 
             if user is None:
-                return Response({"message": "user error"},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Wrong username or password"},
+                                status=status.HTTP_401_UNAUTHORIZED)
 
             refresh = RefreshToken.for_user(user)
 
             return Response({
+                'user': serializer.data,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-            })
+            }, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
