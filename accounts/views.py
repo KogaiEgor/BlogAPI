@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
 
 class signup(views.APIView):
     serializer_class = RegistrationSerializer
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(request_body=RegistrationSerializer)
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
 
@@ -23,6 +25,7 @@ class login(views.APIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request):
         data = request.data
         serializer = LoginSerializer(data=data)
