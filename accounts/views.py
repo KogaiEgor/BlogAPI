@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
 
 class signup(views.APIView):
     serializer_class = RegistrationSerializer
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(request_body=RegistrationSerializer)
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
 
@@ -23,6 +25,7 @@ class login(views.APIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request):
         data = request.data
         serializer = LoginSerializer(data=data)
@@ -33,14 +36,15 @@ class login(views.APIView):
             user = authenticate(username=username, password=password)
 
             if user is None:
-                return Response({"message": "user error"},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Wrong username or password"},
+                                status=status.HTTP_401_UNAUTHORIZED)
 
             refresh = RefreshToken.for_user(user)
 
             return Response({
+                'user': serializer.data,
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-            })
+            }, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)

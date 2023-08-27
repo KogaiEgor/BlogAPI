@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'rest_framework_simplejwt',
+    'blog',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -175,3 +177,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/blog/media/'
+MEDIA_ROOT = BASE_DIR / 'blog/media'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'Auth token eg [Bearer JWT]': {
+            'type': 'apiKey',
+            'name': 'Authorizations',
+            'in': 'header'
+        }
+    }
+}
